@@ -1,5 +1,6 @@
 package com.appsv.todofirebase.todo.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.appsv.todofirebase.todo.data.repository.ToDoRepositoryImpl
@@ -15,6 +16,10 @@ class ToDoViewModel : ViewModel() {
     private val _state = MutableStateFlow(ToDoState())
     val state = _state.asStateFlow()
 
+    init {
+        getToDo()
+    }
+
     fun onEvent(events: ToDoEvents){
         when(events){
             is ToDoEvents.SaveToDo -> {
@@ -27,6 +32,22 @@ class ToDoViewModel : ViewModel() {
 
         viewModelScope.launch {
             toDoRepository.saveToDo(toDoUI)
+        }
+    }
+
+    private fun getToDo(){
+        viewModelScope.launch {
+
+            //_state.value = state.value.copy(isLoading = true)
+
+            toDoRepository.getToDO().collect{toDoList ->
+
+                _state.value = state.value.copy(
+                    toDoList = toDoList,
+                    isLoading = false
+                )
+            }
+
         }
     }
 }

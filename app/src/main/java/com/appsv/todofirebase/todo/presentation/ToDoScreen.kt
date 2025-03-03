@@ -11,8 +11,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,15 +40,28 @@ fun ToDoScreen(
     val scope = rememberCoroutineScope()
 
     Box(
-        modifier = Modifier.fillMaxSize().background(colorResource(R.color.dark_blue))
+        modifier = Modifier.fillMaxSize().background(colorResource(R.color.dark_blue)),
+        contentAlignment = Alignment.Center
     ){
-        LazyColumn(
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
-        ) {
-            items(toDoUIList, key = {it.id}){
-                TodoItem(toDoUI = it)
+        if (state.isLoading){
+            CircularProgressIndicator()
+        }
+        else if (state.toDoList.isNotEmpty()){
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
+            ) {
+                items(state.toDoList, key = {it.id}){
+                    TodoItem(toDoUI = it)
+                }
             }
+        }
+        else{
+            Text(text = "No ToDos , Please add some ToDo!",
+                color = colorResource(R.color.light1_blue)
+            )
+
         }
 
         FloatingActionButton(
