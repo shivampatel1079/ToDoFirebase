@@ -69,15 +69,7 @@ fun ToDoScreen(
             containerColor = colorResource(R.color.medium_blue),
             onClick = {
                 scope.launch {
-                    events(ToDoEvents.SaveToDo(
-                        ToDoUI(
-                            id = "1",
-                            title = "Record Video for AI",
-                            description = "I have to do this, It is IMP",
-                            priority = Priority.HIGH,
-                            dateAdded = "18 Oct, 5:21 am, 2024"
-                        )
-                    ))
+                    //events(ToDoEvents.SaveToDo())
                 }
             }
         ) {

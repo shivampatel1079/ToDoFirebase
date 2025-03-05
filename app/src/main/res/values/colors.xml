@@ -11,5 +11,8 @@
     <color name="medium_blue">#023e8a</color>
     <color name="light_blue">#0077b6</color>
     <color name="light1_blue">#0096c7</color>
+    <color name="red">#c1121f</color>
+    <color name="yellow">#f6aa1c</color>
+    <color name="green">#38b000</color>
 
 </resources>
