@@ -16,8 +16,11 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +28,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.appsv.todofirebase.R
+import com.appsv.todofirebase.core.presentation.component.ToDoDialog
 import com.appsv.todofirebase.core.utils.Priority
 import com.appsv.todofirebase.todo.domain.model.ToDoUI
 import com.appsv.todofirebase.todo.presentation.components.TodoItem
@@ -39,6 +43,13 @@ fun ToDoScreen(
 ) {
     val scope = rememberCoroutineScope()
 
+    val showToDoDialog = rememberSaveable { mutableStateOf(false) }
+
+    val selectedTitle by rememberSaveable { mutableStateOf("") }
+    val selectedDescription by rememberSaveable { mutableStateOf("") }
+    val selectedPriority by rememberSaveable { mutableStateOf(Priority.LOW) }
+    val selectedId by rememberSaveable { mutableStateOf("") }
+
     Box(
         modifier = Modifier.fillMaxSize().background(colorResource(R.color.dark_blue)),
         contentAlignment = Alignment.Center
@@ -52,8 +63,12 @@ fun ToDoScreen(
                 contentPadding = PaddingValues(8.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp),
             ) {
-                items(state.toDoList, key = {it.id}){
-                    TodoItem(toDoUI = it)
+                items(state.toDoList, key = {it.id!!}){
+                    TodoItem(toDoUI = it){
+                        selectedTitle = it.title,
+                        selectedDescription = it.description,`
+
+                    }
                 }
             }
         }
@@ -68,14 +83,34 @@ fun ToDoScreen(
             modifier = Modifier.size(100.dp).padding(20.dp).align(Alignment.BottomEnd),
             containerColor = colorResource(R.color.medium_blue),
             onClick = {
-                scope.launch {
-                    //events(ToDoEvents.SaveToDo())
-                }
+                showToDoDialog.value = true
             }
         ) {
             Icon(imageVector = Icons.Default.Add,
                 contentDescription = "Add",
                 tint = Color.White
+            )
+        }
+
+        if (showToDoDialog.value){
+            ToDoDialog(
+                onDismiss = {
+                    showToDoDialog.value = false
+                },
+                onAddToDo = {title,description,priority,->
+                    scope.launch {
+                        val toDoUI = ToDoUI(
+                            //id,date = no need bec now provided initial value as null to it
+                            title = title,
+                            description = description,
+                            priority = priority
+                        )
+                         events(ToDoEvents.SaveToDo(toDoUI))
+                    }
+                    showToDoDialog.value = false
+                },
+                onDeleteToDo = {},
+                onUpdateToDo = {_,_,_,->}
             )
         }
     }

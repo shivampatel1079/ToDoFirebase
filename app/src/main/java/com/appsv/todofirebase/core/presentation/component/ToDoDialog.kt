@@ -47,18 +47,29 @@ import com.appsv.todofirebase.core.utils.Priority
 
 //@Preview(showSystemUi = true, showBackground = true)
 @Composable
+fun ToDoDialogPreview(){
+    ToDoDialog(
+        onDismiss = {},
+        onAddToDo = {_,_,_,->},
+        onDeleteToDo = {},
+        onUpdateToDo = {_,_,_,->}
+    )
+}
+
+@Composable
 fun ToDoDialog(
     isEditMode: Boolean = false,
     onDismiss: () -> Unit,
     onAddToDo : (String,String,Priority) -> Unit,
 
-    //
-    //
-    //
-    //
-    //
+    onUpdateToDo : (String, String, Priority) -> Unit,
+    onDeleteToDo : () -> Unit,
 
-    )
+    existingTitle: String = "",
+    existingDescription : String = "",
+    existingPriority : Priority = Priority.LOW
+
+)
 //we show dialog 2 times when add, again fro edit and save
 {
    Dialog(
@@ -217,6 +228,31 @@ fun ToDoDialog(
                                    isTitleEmpty = true
                                }
                            },
+                           enabled = currentTitle != existingTitle
+                                   || currentDescription != existingDescription ||
+                                   existingPriority != currentPriority,
+                           colors = ButtonDefaults.buttonColors(
+                               containerColor = Color.Green.copy(0.6f),
+                               contentColor = Color.White,
+                               disabledContentColor = Color.LightGray
+                           )
+                       ) {
+                           Text("Add ToDo", fontWeight = FontWeight.Bold)
+                       }
+                   }
+                   else{
+                       Button(
+                           onClick = {
+                               if(currentTitle.isNotEmpty()){
+                                   onAddToDo(
+                                       currentTitle,
+                                       currentDescription,
+                                       currentPriority
+                                   )
+                               } else {
+                                   isTitleEmpty = true
+                               }
+                           },
                            colors = ButtonDefaults.buttonColors(
                                containerColor = Color.Green.copy(0.6f),
                                contentColor = Color.White
@@ -225,6 +261,11 @@ fun ToDoDialog(
                            Text("Add ToDo", fontWeight = FontWeight.Bold)
                        }
                    }
+               }
+
+               if(confirmDeletingToDo){
+                   SimpleAlertDialog(
+                   )
                }
            }
        }

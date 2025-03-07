@@ -1,5 +1,6 @@
 package com.appsv.todofirebase.todo.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,22 +22,23 @@ import com.appsv.todofirebase.core.utils.Priority
 import com.appsv.todofirebase.todo.domain.model.ToDoUI
 
 
-@Composable
-fun ToDoItemPreview(modifier: Modifier = Modifier) {
-    TodoItem(
-        toDoUI = ToDoUI(
-            id = "",
-            title = "Record Video for AI",
-            description = "I have to do this, It is IMP",
-            priority = Priority.HIGH,
-            dateAdded = "18 Oct, 5:21 am, 2024"
-        )
-    )
-}
+//@Composable
+//fun ToDoItemPreview(modifier: Modifier = Modifier) {
+//    TodoItem(
+//        toDoUI = ToDoUI(
+//            id = "",
+//            title = "Record Video for AI",
+//            description = "I have to do this, It is IMP",
+//            priority = Priority.HIGH,
+//            dateAdded = "18 Oct, 5:21 am, 2024"
+//        )
+//    )
+//}
 
 @Composable
 fun TodoItem(modifier: Modifier = Modifier,
-             toDoUI: ToDoUI
+             toDoUI: ToDoUI,
+             onItemClicked : () -> Unit
 ) {
     val containerColor = when(toDoUI.priority){
         Priority.LOW -> Color.Green
@@ -44,7 +46,7 @@ fun TodoItem(modifier: Modifier = Modifier,
         Priority.HIGH -> Color.Red
     }
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().clickable {  },
         colors = CardDefaults.cardColors(
             containerColor = containerColor
         )
@@ -69,7 +71,7 @@ fun TodoItem(modifier: Modifier = Modifier,
             Spacer(modifier = Modifier.height(15.dp))
             //date
             Text(modifier = Modifier.fillMaxSize(),
-                text = toDoUI.dateAdded,
+                text = toDoUI.dateAdded!!,
                 fontSize = 15.sp,
                 color = Color.White,
                 textAlign = TextAlign.End
