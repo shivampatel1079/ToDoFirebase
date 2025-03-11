@@ -3,6 +3,7 @@ package com.appsv.todofirebase.core.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,8 +16,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -73,7 +79,7 @@ fun ToDoDialog(
 //we show dialog 2 times when add, again fro edit and save
 {
    Dialog(
-       onDismissRequest = {},
+       onDismissRequest = {onDismiss()},
        properties = DialogProperties(usePlatformDefaultWidth = false)
    ) {
        Surface(
@@ -132,9 +138,48 @@ fun ToDoDialog(
                    )
                    // icons for update and Delete
                    Row (
-
+                       verticalAlignment = Alignment.CenterVertically,
+                       horizontalArrangement = Arrangement.spacedBy(8.dp)
                    ){
+                       if (isEditMode){
+                           Box(
+                               modifier = Modifier.background(
+                                   Color.Cyan.copy(alpha = 0.2f),
+                                   shape = MaterialTheme.shapes.extraLarge
+                               )
+                           ){
+                               IconButton(
+                                   onClick = {
+                                       enable = true
+                                   }
+                               ) {
+                                   Icon(
+                                       imageVector = Icons.Default.Edit,
+                                       contentDescription = "Edit ToDo",
+                                       tint = Color.Cyan
+                                   )
+                               }
+                           }
 
+                           Box(
+                               modifier = Modifier.background(
+                                   Color.Red.copy(alpha = 0.2f),
+                                   shape = MaterialTheme.shapes.extraLarge
+                               )
+                           ){
+                               IconButton(
+                                   onClick = {
+                                       confirmDeletingToDo = true
+                                   }
+                               ) {
+                                   Icon(
+                                       imageVector = Icons.Default.Delete,
+                                       contentDescription = "Delete ToDo",
+                                       tint = Color.Red
+                                   )
+                               }
+                           }
+                       }
                    }
                }
                Spacer(modifier = Modifier.height(10.dp))
@@ -265,7 +310,18 @@ fun ToDoDialog(
 
                if(confirmDeletingToDo){
                    SimpleAlertDialog(
-                   )
+                       title = "Deleting ToDo?",
+                       text = "Are you sure want to delete this ToDo?",
+                       onConfirm = {
+                           onDeleteToDo()
+                           confirmDeletingToDo = false
+                       },
+                       onDismiss = {
+                           confirmDeletingToDo = false
+                       }
+                   ){
+
+                   }
                }
            }
        }

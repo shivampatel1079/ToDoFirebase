@@ -46,7 +46,9 @@ fun TodoItem(modifier: Modifier = Modifier,
         Priority.HIGH -> Color.Red
     }
     Card(
-        modifier = Modifier.fillMaxWidth().clickable {  },
+        modifier = Modifier.fillMaxWidth().clickable {
+            onItemClicked()
+        },
         colors = CardDefaults.cardColors(
             containerColor = containerColor
         )
