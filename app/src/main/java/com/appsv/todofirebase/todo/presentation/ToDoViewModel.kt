@@ -25,6 +25,13 @@ class ToDoViewModel : ViewModel() {
             is ToDoEvents.SaveToDo -> {
                 saveToDo(events.toDoUI)
             }
+
+            is ToDoEvents.DeleteToDo -> {
+                deleteToDo(events.id)
+            }
+            is ToDoEvents.UpdateToDo -> {
+                updateToDo(events.toDoUI)
+            }
         }
     }
 
@@ -48,6 +55,18 @@ class ToDoViewModel : ViewModel() {
                 )
             }
 
+        }
+    }
+
+    private fun updateToDo(toDoUI: ToDoUI){
+        viewModelScope.launch { //we launch bec. in repo its suspend fun.
+            toDoRepository.updateToDo(toDoUI)
+        }
+    }
+
+    private fun deleteToDo(id: String){
+        viewModelScope.launch {
+            toDoRepository.deleteToDo(id)
         }
     }
 }

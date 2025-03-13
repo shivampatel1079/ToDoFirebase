@@ -16,8 +16,8 @@ import kotlinx.coroutines.tasks.await
 
 class ToDoRepositoryImpl : ToDoRepository {
 
-    val firebase = FirebaseDatabase.getInstance()
-    val toDoRef = firebase.getReference("ToDoItems")
+    private val firebase = FirebaseDatabase.getInstance()
+    private val toDoRef = firebase.getReference("ToDoItems")
 
     override suspend fun saveToDo(toDoUI: ToDoUI) {
         val toDoDTO = toDoUI.toToDoDTO()
@@ -49,6 +49,25 @@ class ToDoRepositoryImpl : ToDoRepository {
         )
 
         awaitClose { toDoRef.removeEventListener(listener) }
+    }
+
+    override suspend fun updateToDo(toDoUI: ToDoUI) {
+        val toDoDTO = toDoUI.toToDoDTO()
+        try {
+            toDoRef.child(toDoDTO.id!!).setValue(toDoDTO).await()
+        }
+        catch (e : Exception){
+
+        }
+    }
+
+    override suspend fun deleteToDo(id: String) {
+        try {
+            toDoRef.child(id).removeValue().await()
+        }
+        catch (e : Exception){
+
+        }
     }
 
 }

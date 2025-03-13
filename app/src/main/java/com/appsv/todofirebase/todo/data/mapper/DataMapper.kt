@@ -6,7 +6,7 @@ import java.util.UUID
 
 fun ToDoUI.toToDoDTO() : ToDoDTO{
     return ToDoDTO(
-        id = UUID.randomUUID().toString(),
+        id = id ?: UUID.randomUUID().toString(),
         title = title,
         description = description,
         priority = priority,

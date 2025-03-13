@@ -116,8 +116,25 @@ fun ToDoScreen(
                     }
                     showToDoDialog.value = false
                 },
-                onDeleteToDo = {},
-                onUpdateToDo = {_,_,_,->},
+                onDeleteToDo = {
+                    scope.launch {
+                        events(ToDoEvents.DeleteToDo(selectedId))
+                    }
+                    showToDoDialog.value = false
+                },
+                onUpdateToDo = {title,description,priority,->
+                    scope.launch {
+                        val toDoUI = ToDoUI(
+                            //id,date = no need bec now provided initial value as null to it
+                            id = selectedId,
+                            title = title,
+                            description = description,
+                            priority = priority
+                        )
+                        events(ToDoEvents.UpdateToDo(toDoUI))
+                    }
+                    showToDoDialog.value = false
+                },
                 existingPriority = selectedPriority,
                 existingTitle = selectedTitle ,
                 existingDescription = selectedDescription,
